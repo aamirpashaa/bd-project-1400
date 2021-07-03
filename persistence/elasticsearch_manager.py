@@ -1,5 +1,5 @@
 from kafka import KafkaConsumer
-import json, requests, uuid, datetime
+import json, requests
 
 
 consumer = KafkaConsumer('persistence', auto_offset_reset='earliest', bootstrap_servers=['localhost:9092'], api_version=(0, 10), consumer_timeout_ms=1000, value_deserializer=lambda m: json.loads(m.decode('utf-8')))
