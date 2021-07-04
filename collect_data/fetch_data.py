@@ -1,5 +1,5 @@
 from telegram_client import Client
-from telethon import events
+from telethon import functions, events
 from kafka import KafkaProducer
 import json, datetime
 
@@ -17,10 +17,15 @@ producer = KafkaProducer(bootstrap_servers=['localhost:9092'], api_version=(0, 1
 
 @client.on(events.NewMessage(chats = channels_list))
 async def newMessageListener(event):
-	newMessage = event.message
-	producer.send('preprocess', newMessage.to_dict())
+	new_message = event.message
+
+	channel = await client.get_entity(new_message.peer_id.channel_id)
+	new_message = new_message.to_dict()
+	new_message['name'] = channel.title
+
+	producer.send('preprocess', new_message)
 	producer.flush()
 
 
-with client: 
+with client:
 	client.run_until_disconnected()
