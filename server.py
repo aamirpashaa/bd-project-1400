@@ -1,5 +1,5 @@
 import redis
-from flask import Flask
+from flask import Flask, url_for
 import datetime, json
 
 r = redis.Redis(host='localhost', port=6379, db=1, decode_responses=True)
@@ -10,7 +10,7 @@ app = Flask(__name__)
 def channels_posts(time_range):
 	now = datetime.datetime.now()
 	now = [now - datetime.timedelta(hours=x) for x in range(0, int(time_range))]
-	keys = ['post:[0-9]*#{}'.format(x.strftime("%Y-%m-%dT%H")) for x in now]
+	keys = ['post:[\u0621-\u0628\u062A-\u063A\u0641-\u0642\u0644-\u0648\u064E-\u0651\u0655\u067E\u0686\u0698\u06A9\u06AF\u06BE\u06CC]*#{}'.format(x.strftime("%Y-%m-%dT%H")) for x in now]
 	result = {}
 	
 	for key_pattern in keys:
@@ -48,7 +48,7 @@ def hashtags(time_range):
 def total_posts(time_range):
 	now = datetime.datetime.now()
 	now = [now - datetime.timedelta(hours=x) for x in range(0, int(time_range))]
-	keys = ['post:[0-9]*#{}'.format(x.strftime("%Y-%m-%dT%H")) for x in now]
+	keys = ['post:[\u0621-\u0628\u062A-\u063A\u0641-\u0642\u0644-\u0648\u064E-\u0651\u0655\u067E\u0686\u0698\u06A9\u06AF\u06BE\u06CC]*#{}'.format(x.strftime("%Y-%m-%dT%H")) for x in now]
 	
 	result = 0
 	for key_pattern in keys:
@@ -75,4 +75,4 @@ def recent_hashtags():
 
 
 if __name__ == "__main__":
-	app.run(debug=True) 
+	app.run(host = 'localhost', port = 8080, debug = True) 

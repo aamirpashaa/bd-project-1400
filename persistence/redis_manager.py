@@ -33,7 +33,7 @@ while(True):
 		new_item = item.value
 		dt = new_item['date'] + "T" + new_item['time']
 
-		channels_number_of_posts(new_item['name'], dt)
+		channels_number_of_posts(new_item['sender_name'], dt)
 		hashtags_number(new_item['hashtags'], dt)
 		recent_posts(new_item['message'])
 
