@@ -21,7 +21,7 @@ async def newMessageListener(event):
 
 	channel = await client.get_entity(new_message.peer_id.channel_id)
 	new_message = new_message.to_dict()
-	new_message['name'] = channel.title
+	new_message['sender_name'] = channel.title
 
 	producer.send('preprocess', new_message)
 	producer.flush()
