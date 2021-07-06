@@ -29,9 +29,9 @@ while(True):
 		new_item = item.value
 		print('new item recieved')
 
-		session.execute(insert_messages_query, (new_item['date'], new_item['time'], str(new_item['id'])) )
-		session.execute(insert_channels_query, (str(new_item['peer_id']['channel_id']), new_item['timestamp'], str(new_item['id'])) )
+		session.execute(insert_messages_query, (new_item['date'], new_item['time'], new_item['UUID']))
+		session.execute(insert_channels_query, (str(new_item['peer_id']['channel_id']), new_item['timestamp'], new_item['UUID']))
 
 		#for kw in (new_item['hashtags'] + new_item['keyword']):
 		for kw in new_item['hashtags']:
-			session.execute(insert_keywords_query, (kw, new_item['timestamp'], str(new_item['id'])) )
+			session.execute(insert_keywords_query, (kw, new_item['timestamp'], new_item['UUID']))
