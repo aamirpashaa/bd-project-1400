@@ -30,10 +30,12 @@ while(True):
 		new_item = item.value
 
 		channels_number_of_posts(new_item['peer_id']['channel_id'], new_item['date'] + ":" + new_item['time']) #new_item['name']
-		channels_number_of_posts(new_item['hashtags'], new_item['date'] + ":" + new_item['time'])
+		hashtags_number(new_item['hashtags'], new_item['date'] + ":" + new_item['time'])
 		recent_post(new_item['message'])
 
 
+#print(r.lrange('recent_hashtags', 0, -1))
 
-for elem in r.keys():
-	r.delete(elem)
+
+# for elem in r.keys():
+# 	r.delete(elem)
