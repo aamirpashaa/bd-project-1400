@@ -1,5 +1,5 @@
 from kafka import KafkaConsumer
-import json, requests
+import json
 from cassandra.cluster import Cluster
 
 
