@@ -15,10 +15,9 @@ create_channels_query = '''
 			channel_id String,
 			sender_name String,
 			UUID UUID,
-			views Int32, 
-			time String, 
+			views Int32,
 			timestamp Float32, 
-			date Date
+			date DateTime
 		) 	
 		ENGINE = MergeTree
 		PARTITION BY date ORDER BY (timestamp)
@@ -29,9 +28,8 @@ create_keywords_query = '''
 		(
 			keyword String,
 			sender_name String,
-			time String, 
 			timestamp Float32, 
-			date Date
+			date DateTime
 		) 	
 		ENGINE = MergeTree
 		PARTITION BY date ORDER BY (timestamp)
@@ -45,14 +43,14 @@ while(True):
 		new_item = item.value
 		
 		client.execute(
-			'INSERT INTO telegram.channels (channel_id, sender_name, UUID, views, time, timestamp, date) VALUES',
-			[( str(new_item['peer_id']['channel_id']), new_item['sender_name'], new_item['UUID'], new_item['views'], new_item['time'], new_item['timestamp'], datetime.datetime.strptime(new_item['date'], "%Y-%m-%d") )]
+			'INSERT INTO telegram.channels (channel_id, sender_name, UUID, views, timestamp, date) VALUES',
+			[( str(new_item['peer_id']['channel_id']), new_item['sender_name'], new_item['UUID'], new_item['views'], new_item['timestamp'], datetime.datetime.strptime(new_item['date'] + 'T' + new_item['time'], "%Y-%m-%dT%H:%M:%S") )]
 		)
 
 		for kw in new_item['hashtags'] + new_item['keywords']:
 			client.execute(
-				'INSERT INTO telegram.keywords (keyword, sender_name, time, timestamp, date) VALUES',
-				[( kw, new_item['sender_name'], new_item['time'], new_item['timestamp'], datetime.datetime.strptime(new_item['date'], "%Y-%m-%d") )]
+				'INSERT INTO telegram.keywords (keyword, sender_name, timestamp, date) VALUES',
+				[( kw, new_item['sender_name'], new_item['timestamp'], datetime.datetime.strptime(new_item['date'] + 'T' + new_item['time'], "%Y-%m-%dT%H:%M:%S") )]
 			)
 
 
@@ -61,4 +59,3 @@ while(True):
 #client.execute('DROP TABLE telegram.channels')
 # client.execute('DROP TABLE telegram.keywords')
 # client.execute('DROP DATABASE telegram')
-# client.execute('DROP DATABASE bigdata')

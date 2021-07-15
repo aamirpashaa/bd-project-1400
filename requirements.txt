@@ -46,6 +46,7 @@ geomet==0.2.1.post1
 geopy==2.1.0
 graphlib-backport==1.0.3
 gunicorn==20.0.4
+hazm==0.7.0
 holidays==0.10.3
 humanize==3.10.0
 idna==2.10
@@ -57,6 +58,7 @@ jsonschema==3.2.0
 kafka-python==2.0.2
 kombu==4.6.11
 korean-lunar-calendar==0.2.1
+libwapiti==0.2.1
 Mako==1.1.4
 Markdown==3.3.4
 MarkupSafe==2.0.1
@@ -66,6 +68,7 @@ marshmallow-sqlalchemy==0.23.1
 msgpack==1.0.2
 multidict==5.1.0
 networkx==2.5.1
+nltk==3.3
 numpy==1.21.0
 packaging==21.0
 pandas==1.2.5

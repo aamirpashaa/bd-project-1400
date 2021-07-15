@@ -1,5 +1,6 @@
 from kafka import KafkaConsumer, KafkaProducer
 import uuid, json, datetime, re
+from hazm import *
 import yake
 
 def split_date_time(date):
@@ -9,18 +10,36 @@ def split_date_time(date):
 
 	return date, time, timestamp
 
+def clean_message(message):
+	normalizer = Normalizer()
+	stop_words = []
+
+	with open("./preprocess/stopwords.txt", "r") as swf:
+		sw = swf.read()
+		stop_words = sw.split("\n")
+	swf.close()
+
+	message = re.sub(r'http[s]?://\S+', '', message)
+	message = re.sub(r'[A-Za-z0-9]+@[a-zA-z].[a-zA-Z]+', '', message)
+	message = normalizer.normalize(message)
+	message = word_tokenize(message)
+	message = [word for word in message if word not in stop_words and word.isalpha()]
+	message = ' '.join(message)
+
+	return message
+
+
 def find_hashtags(message):
 	hashtags = re.findall(r"#(\w+)", message)
 	return hashtags
 
 def find_keywords(message):
+	message = clean_message(message)
+
 	kw_extractor = yake.KeywordExtractor()
-	max_ngram_size = 1
-	deduplication_threshold = 0.9
-	numOfKeywords = 5
-	custom_kw_extractor = yake.KeywordExtractor(n=max_ngram_size, dedupLim=deduplication_threshold, top=numOfKeywords, features=None)
+	custom_kw_extractor = yake.KeywordExtractor(n=1, features=None, top=10)
 	keywords = custom_kw_extractor.extract_keywords(message)
-	keywords = [x[0] for x in keywords]
+	keywords = [x[0] for x in keywords if x[1] > 0.09]
 
 	return keywords
 
