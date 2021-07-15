@@ -6,7 +6,7 @@ r = redis.Redis(host='localhost', port=6379, db=1, decode_responses=True)
 app = Flask(__name__)
 
 
-@app.route('/channels/<time_range>/')
+@app.route('/redis/channels/<time_range>/')
 def channels_posts(time_range):
 	now = datetime.datetime.now()
 	now = [now - datetime.timedelta(hours=x) for x in range(0, int(time_range))]
@@ -25,7 +25,7 @@ def channels_posts(time_range):
 
 
 
-@app.route('/hashtags/<time_range>/')
+@app.route('/redis/hashtags/<time_range>/')
 def hashtags(time_range):
 	now = datetime.datetime.now()
 	now = [now - datetime.timedelta(hours=x) for x in range(0, int(time_range))]
@@ -44,7 +44,7 @@ def hashtags(time_range):
 
 
 
-@app.route('/total_posts/<time_range>/')
+@app.route('/redis/total_posts/<time_range>/')
 def total_posts(time_range):
 	now = datetime.datetime.now()
 	now = [now - datetime.timedelta(hours=x) for x in range(0, int(time_range))]
@@ -61,14 +61,14 @@ def total_posts(time_range):
 
 
 
-@app.route('/recent_posts/')
+@app.route('/redis/recent_posts/')
 def recent_posts():
 	result = r.lrange('recent_posts', 0, -1)
 	return json.dumps({"recent_posts": result})
 
 
 
-@app.route('/recent_hashtags/')
+@app.route('/redis/recent_hashtags/')
 def recent_hashtags():
 	result = r.lrange('recent_hashtags', 0, -1)
 	return json.dumps({"recent_hashtags": result})
