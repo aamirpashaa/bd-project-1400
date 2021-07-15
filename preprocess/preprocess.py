@@ -13,6 +13,7 @@ def split_date_time(date):
 def clean_message(message):
 	normalizer = Normalizer()
 	stop_words = []
+	special_words = []
 
 	with open("./preprocess/stopwords.txt", "r") as swf:
 		sw = swf.read()
@@ -24,24 +25,24 @@ def clean_message(message):
 	message = normalizer.normalize(message)
 	message = word_tokenize(message)
 	message = [word for word in message if word not in stop_words and word.isalpha()]
+	special_words = [word for word in message if word in ['روحانی' , 'بورس', 'اقتصاد', 'دلار', 'یورو', 'تحریم', 'دولت', 'انتخابات', 'طلا', 'کرونا', 'کوید', 'تورم', 'دانشگاه']]
 	message = ' '.join(message)
 
-	return message
+	return message, special_words
 
 
 def find_hashtags(message):
 	hashtags = re.findall(r"#(\w+)", message)
-	return hashtags
+	return list(set(hashtags))
 
 def find_keywords(message):
-	message = clean_message(message)
+	message, special_words = clean_message(message)
 
 	kw_extractor = yake.KeywordExtractor()
 	custom_kw_extractor = yake.KeywordExtractor(n=1, features=None, top=10)
 	keywords = custom_kw_extractor.extract_keywords(message)
-	keywords = [x[0] for x in keywords if x[1] > 0.09]
-
-	return keywords
+	keywords = [x[0] for x in keywords if x[1] > 0.09] + special_words
+	return list(set(keywords))
 
 
 producer = KafkaProducer(bootstrap_servers=['localhost:9092'], api_version=(0, 10), value_serializer=lambda v: json.dumps(v).encode('utf-8'))
