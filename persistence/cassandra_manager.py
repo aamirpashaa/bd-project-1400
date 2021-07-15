@@ -1,4 +1,4 @@
-from kafka import KafkaConsumer
+from kafka import KafkaConsumer, KafkaProducer
 import json
 from cassandra.cluster import Cluster
 
@@ -32,7 +32,7 @@ while(True):
 		session.execute(insert_messages_query, (new_item['date'], new_item['time'], new_item['UUID']))
 		session.execute(insert_channels_query, (str(new_item['peer_id']['channel_id']), new_item['timestamp'], new_item['UUID']))
 
-		for kw in (new_item['hashtags'] + new_item['keyword']):
+		for kw in (new_item['hashtags'] + new_item['keywords']):
 			session.execute(insert_keywords_query, (kw, new_item['timestamp'], new_item['UUID']))
 
 		producer.send('statistics', new_item)
