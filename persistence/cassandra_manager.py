@@ -10,10 +10,10 @@ session = cluster.connect("telegram")
 query = "CREATE TABLE IF NOT EXISTS messages ( date text, time text, post_id text, primary key(date, time, post_id) );"
 result = session.execute(query)
 
-query = "CREATE TABLE IF NOT EXISTS channels ( channel_id text, ts float, post_id text, primary key(channel_id, post_id) );"
+query = "CREATE TABLE IF NOT EXISTS channels ( channel_id text, ts float, post_id text, primary key(channel_id, ts, post_id)) WITH CLUSTERING ORDER BY (ts DESC, post_id DESC);"
 result = session.execute(query)
 
-query = "CREATE TABLE IF NOT EXISTS keywords ( keyword text, ts float, post_id text, primary key(keyword, post_id) );"
+query = "CREATE TABLE IF NOT EXISTS keywords ( keyword text, ts float, post_id text, primary key(keyword, ts, post_id)) WITH CLUSTERING ORDER BY (ts DESC, post_id DESC);"
 result = session.execute(query)
 
 
