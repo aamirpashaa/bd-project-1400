@@ -26,7 +26,7 @@ def channels_posts(time_range):
 
 
 @app.route('/redis/keywords/<time_range>/')
-def hashtags(time_range):
+def keywords(time_range):
 	now = datetime.datetime.now()
 	now = [now - datetime.timedelta(hours=x) for x in range(0, int(time_range))]
 	keys = ['keyword:[\u0621-\u0628\u062A-\u063A\u0641-\u0642\u0644-\u0648\u064E-\u0651\u0655\u067E\u0686\u0698\u06A9\u06AF\u06BE\u06CC]*#{}'.format(x.strftime("%Y-%m-%dT%H")) for x in now]
@@ -69,7 +69,7 @@ def recent_posts():
 
 
 @app.route('/redis/recent_keywords/')
-def recent_hashtags():
+def recent_keywords():
 	result = r.lrange('recent_keywords', 0, -1)
 	return json.dumps({"recent_keywords": result})
 
