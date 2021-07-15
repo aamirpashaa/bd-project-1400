@@ -9,14 +9,14 @@ def channels_number_of_posts(name, date):
 	r.expire(ck, datetime.timedelta(days=7))
 
 
-def hashtags_number(hashtags, date):
-	for hashtag in hashtags:
-		ck = 'hashtag:{}#{}'.format(hashtag, date.split(':')[0])
+def keywords_number(keywords, date):
+	for kw in keywords:
+		ck = 'keyword:{}#{}'.format(kw, date.split(':')[0])
 		r.incr(ck)
 		r.expire(ck, datetime.timedelta(days=7))
 
-		r.lpush('recent_hashtags', hashtag)
-		r.ltrim('recent_hashtags', 0, 999)
+		r.lpush('recent_keywords', kw)
+		r.ltrim('recent_keywords', 0, 999)
 
 def recent_posts(post):
 	r.lpush('recent_posts', post)
@@ -24,7 +24,8 @@ def recent_posts(post):
 
 
 producer = KafkaProducer(bootstrap_servers=['localhost:9092'], api_version=(0, 10), value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-consumer = KafkaConsumer('persistence', auto_offset_reset='earliest', bootstrap_servers=['localhost:9092'], api_version=(0, 10), consumer_timeout_ms=1000, value_deserializer=lambda m: json.loads(m.decode('utf-8')))
+consumer = KafkaConsumer('statistics', auto_offset_reset='earliest', bootstrap_servers=['localhost:9092'], api_version=(0, 10), consumer_timeout_ms=1000, value_deserializer=lambda m: json.loads(m.decode('utf-8')))
+
 r = redis.Redis(host='localhost', port=6379, db=1, decode_responses=True)
 
 
@@ -34,7 +35,7 @@ while(True):
 		dt = new_item['date'] + "T" + new_item['time']
 
 		channels_number_of_posts(new_item['sender_name'], dt)
-		hashtags_number(new_item['hashtags'], dt)
+		keywords_number(new_item['hashtags'] + new_item['keywords'], dt)
 		recent_posts(new_item['message'])
 
 		producer.send('analytics', new_item)
