@@ -15,17 +15,22 @@ def clean_message(message):
 	stop_words = []
 	special_words = []
 
-	with open("./preprocess/stopwords.txt", "r") as swf:
-		sw = swf.read()
-		stop_words = sw.split("\n")
-	swf.close()
+	# with open("./stopwords.txt", "r") as swf:
+	# 	sw = swf.read()
+	# 	stop_words = sw.split("\n")
+	# swf.close()
+
+	stop_words = [line.rstrip() for line in open("stopwords/persian")]
+	stop_words.extend([line.rstrip() for line in open("stopwords/verbal")])
+	stop_words.extend([line.rstrip() for line in open("stopwords/nonverbal")])
+	stop_words.extend([line.rstrip() for line in open("stopwords/short")])
 
 	message = re.sub(r'http[s]?://\S+', '', message)
 	message = re.sub(r'[A-Za-z0-9]+@[a-zA-z].[a-zA-Z]+', '', message)
 	message = normalizer.normalize(message)
 	message = word_tokenize(message)
 	message = [word for word in message if word not in stop_words and word.isalpha()]
-	special_words = [word for word in message if word in ['روحانی' , 'بورس', 'اقتصاد', 'دلار', 'یورو', 'تحریم', 'دولت', 'انتخابات', 'طلا', 'کرونا', 'کوید', 'تورم', 'دانشگاه']]
+	special_words = [word for word in message if word in ['روحانی' , 'بورس', 'اقتصاد', 'دلار', 'یورو', 'تحریم', 'دولت', 'انتخابات', 'طلا', 'کرونا', 'کووید', 'کوید', 'تورم', 'دانشگاه']]
 	message = ' '.join(message)
 
 	return message, special_words
@@ -54,6 +59,9 @@ while(True):
 	for item in consumer:
 		new_item = item.value
 		new_item['UUID'] = str(uuid.uuid1(new_item['id']))
+
+		if 'message' not in new_item:
+			continue
 		
 		new_item['hashtags'] = find_hashtags(new_item['message'])
 		new_item['keywords'] = find_keywords(new_item['message'])
@@ -65,3 +73,5 @@ while(True):
 
 		producer.send('persistence', new_item)
 		producer.flush()
+
+		print(datetime.datetime.now(),"new message inserted into persistence")
