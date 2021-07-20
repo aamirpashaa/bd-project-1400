@@ -1,5 +1,6 @@
 from kafka import KafkaConsumer, KafkaProducer
 import json, requests
+import datetime
 
 
 producer = KafkaProducer(bootstrap_servers=['localhost:9092'], api_version=(0, 10), value_serializer=lambda v: json.dumps(v).encode('utf-8'))
@@ -36,3 +37,7 @@ while(True):
 
 		producer.send('channel_history', new_item)
 		producer.flush()
+
+		print(datetime.datetime.now(),"new message inserted into channel_history")
+
+		

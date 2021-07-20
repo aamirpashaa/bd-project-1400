@@ -53,6 +53,8 @@ while(True):
 				[( kw, new_item['sender_name'], new_item['timestamp'], datetime.datetime.strptime(new_item['date'] + 'T' + new_item['time'], "%Y-%m-%dT%H:%M:%S") )]
 			)
 
+		print(datetime.datetime.now(),"new message inserted into clickhouse")
+
 
 
 

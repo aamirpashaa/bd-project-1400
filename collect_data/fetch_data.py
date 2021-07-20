@@ -26,6 +26,8 @@ async def newMessageListener(event):
 	producer.send('preprocess', new_message)
 	producer.flush()
 
+	print(datetime.datetime.now(),"new message inserted into preprocess")
+
 
 with client:
 	client.run_until_disconnected()

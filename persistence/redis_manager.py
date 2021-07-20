@@ -41,6 +41,8 @@ while(True):
 		producer.send('analytics', new_item)
 		producer.flush()
 
+		print(datetime.datetime.now(),"new message inserted into analytics")
+
 
 # for elem in r.keys():
 # 	r.delete(elem)
